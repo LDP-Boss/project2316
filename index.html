@@ -190,7 +190,7 @@ document.getElementById("scoreValue").textContent = score;
 document.getElementById("bestScore").textContent = bestScore;
 document.getElementById("totalScore").textContent = totalScore;
 // --- TEST SETTING: Set to 10 seconds from current time ---
-const targetDate = new Date(2026, 5, 24, 22,50, 0).getTime();
+const targetDate = new Date(2026, 5, 24, 23,20, 0).getTime();
 
 setInterval(()=>{
  const n=nicknames[Math.floor(Math.random()*nicknames.length)];
@@ -215,7 +215,7 @@ const bg=document.getElementById("bg");
 images.forEach(src=>{
  let d=document.createElement("div");
  d.className="slide";
- d.style.backgroundImage=`url(images/${src})`;
+d.style.backgroundImage=`url(${src})`;
  bg.appendChild(d);
 });
 
