@@ -92,10 +92,7 @@ animation:nicknamePulse 2s infinite;
 </style>
 </head>
 <body>
-<div id="startOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; display:flex; justify-content:center; align-items:center; flex-direction:column;">
-    <h2 style="color:white; margin-bottom:20px;">Click to Celebrate! ❤️</h2>
-    <button onclick="begin()" style="padding:15px 30px; font-size:1.2rem; cursor:pointer; background:hotpink; color:white; border:none; border-radius:10px;">Enter Surprise</button>
-</div>
+
 <div id="bg"></div>
 
 <div id="topBanner">
@@ -165,7 +162,7 @@ animation:nicknamePulse 2s infinite;
         
     </div>
     <h2>so, Keep Smiling my champ 💫</h2>
- Happy Birthday, my dear bujji Kodipilla. ❤️🥰</p>
+Happy Birthday, my dear bujji Kodipilla. ❤️🥰</p>
   </center>
 </div>
 </div>
@@ -192,8 +189,8 @@ let score = Number(localStorage.getItem("heartScore") || 0);
 document.getElementById("scoreValue").textContent = score;
 document.getElementById("bestScore").textContent = bestScore;
 document.getElementById("totalScore").textContent = totalScore;
-// --- TEST SETTING ---
-const targetDate = new Date(2026, 5, 25, 6, 37, 0).getTime();
+// --- TEST SETTING: Set to 10 seconds from current time ---
+const targetDate = new Date(2026, 6, 19, 0, 0, 0).getTime();
 
 setInterval(()=>{
  const n=nicknames[Math.floor(Math.random()*nicknames.length)];
@@ -218,7 +215,7 @@ const bg=document.getElementById("bg");
 images.forEach(src=>{
  let d=document.createElement("div");
  d.className="slide";
-d.style.backgroundImage=`url(${src})`;
+ d.style.backgroundImage=`url(${src})`;
  bg.appendChild(d);
 });
 
@@ -235,50 +232,55 @@ function startSlideshow(){
 }
 
 let started=false;
-function begin() {
-    // Hide the overlay
-    document.getElementById("startOverlay").style.display = "none";
-    
-    // Call the original celebrate logic
-    celebrate();
-    
-    // Play music immediately after user interaction
-    document.getElementById("bgm").play().catch(e => console.log(e));
+function celebrate(){
+ if(started)return;
+ started=true;
+ document.getElementById("topBanner").style.display="none";
+ 
+ document.body.style.overflow="auto";
+ document.getElementById("countdownBox").style.display="none";
+ document.getElementById("score").style.display="none";
+ document.getElementById("motivation").style.display="none";
+ document.getElementById("celebration").style.display="block";
+ document.getElementById("bgm").play().catch(()=>{});
+ startSlideshow();
+ for(let i=0; i<50; i++){
+     const h = document.createElement("div");
+     h.style.position = "fixed";
+     h.style.left = "50%";
+     h.style.top = "50%";
+     h.style.fontSize = "30px";
+     h.style.zIndex = "999";
+     h.textContent = "❤️";
+     document.body.appendChild(h);
+     const angle = Math.random() * Math.PI * 2;
+     const velocity = Math.random() * 10 + 5;
+     let x = 0, y = 0;
+     const t = setInterval(()=>{
+         x += Math.cos(angle) * velocity;
+         y += Math.sin(angle) * velocity;
+         h.style.transform = `translate(${x}px, ${y}px)`;
+         if(Math.abs(x) > window.innerWidth || Math.abs(y) > window.innerHeight) { clearInterval(t); h.remove(); }
+     }, 30);
+ }
 }
 
-function celebrate() {
-    if(started) return;
-    started = true;
-    document.getElementById("topBanner").style.display = "none";
-    document.body.style.overflow = "auto";
-    document.getElementById("countdownBox").style.display = "none";
-    document.getElementById("score").style.display = "none";
-    document.getElementById("motivation").style.display = "none";
-    document.getElementById("celebration").style.display = "block";
-    
-    startSlideshow();
-    
-    // Heart animation logic...
-    for(let i=0; i<50; i++){
-        const h = document.createElement("div");
-        h.style.position = "fixed";
-        h.style.left = "50%";
-        h.style.top = "50%";
-        h.style.fontSize = "30px";
-        h.style.zIndex = "999";
-        h.textContent = "❤️";
-        document.body.appendChild(h);
-        const angle = Math.random() * Math.PI * 2;
-        const velocity = Math.random() * 10 + 5;
-        let x = 0, y = 0;
-        const t = setInterval(()=>{
-            x += Math.cos(angle) * velocity;
-            y += Math.sin(angle) * velocity;
-            h.style.transform = `translate(${x}px, ${y}px)`;
-            if(Math.abs(x) > window.innerWidth || Math.abs(y) > window.innerHeight) { clearInterval(t); h.remove(); }
-        }, 30);
-    }
+function showFloatingText(text,x,y){
+ const msg=document.createElement("div");
+ msg.className="floatText";
+ msg.innerText=text;
+ msg.style.left=x+"px";
+ msg.style.top=y+"px";
+ document.body.appendChild(msg);
+ let pos=y;
+ const t=setInterval(()=>{
+  pos-=2;
+  msg.style.top=pos+"px";
+  msg.style.opacity=(pos-(y-60))/60;
+  if(pos<y-60){ clearInterval(t); msg.remove(); }
+ },20);
 }
+
 function spawnHeart(){
  if(started)return;
  const h=document.createElement("div");
@@ -320,22 +322,16 @@ h.onclick = () => {
  setTimeout(()=>h.remove(),4500);
 }
 setInterval(spawnHeart,700);
-setInterval(() => {
-    const diff = targetDate - Date.now();
-    
-    if (diff <= 0) {
-        // Instead of auto-starting, show the button
-        document.getElementById("startOverlay").style.display = "flex";
-        document.getElementById("timer").textContent = "0d 0h 0m 0s";
-        return; 
-    }
-    
-    const d = Math.floor(diff / 86400000);
-    const h = Math.floor((diff % 86400000) / 3600000);
-    const m = Math.floor((diff % 3600000) / 60000);
-    const s = Math.floor((diff % 60000) / 1000);
-    document.getElementById("timer").textContent = `${d}d ${h}h ${m}m ${s}s`;
-}, 1000);
+
+setInterval(()=>{
+ const diff=targetDate-Date.now();
+ if(diff<=0){celebrate();return;}
+ const d=Math.floor(diff/86400000);
+ const h=Math.floor((diff%86400000)/3600000);
+ const m=Math.floor((diff%3600000)/60000);
+ const s=Math.floor((diff%60000)/1000);
+ document.getElementById("timer").textContent=`${d}d ${h}h ${m}m ${s}s`;
+},1000);
 </script>
 </body>
 </html>
