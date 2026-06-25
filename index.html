@@ -92,7 +92,7 @@ animation:nicknamePulse 2s infinite;
 </style>
 </head>
 <body>
-<div id="startOverlay" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; display:flex; justify-content:center; align-items:center; flex-direction:column;">
+<div id="startOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; display:flex; justify-content:center; align-items:center; flex-direction:column;">
     <h2 style="color:white; margin-bottom:20px;">Click to Celebrate! ❤️</h2>
     <button onclick="begin()" style="padding:15px 30px; font-size:1.2rem; cursor:pointer; background:hotpink; color:white; border:none; border-radius:10px;">Enter Surprise</button>
 </div>
@@ -193,7 +193,7 @@ document.getElementById("scoreValue").textContent = score;
 document.getElementById("bestScore").textContent = bestScore;
 document.getElementById("totalScore").textContent = totalScore;
 // --- TEST SETTING ---
-const targetDate = new Date(2026, 6, 19, 0, 0, 0).getTime();
+const targetDate = new Date(2026, 5, 25, 6, 37, 0).getTime();
 
 setInterval(()=>{
  const n=nicknames[Math.floor(Math.random()*nicknames.length)];
@@ -320,16 +320,22 @@ h.onclick = () => {
  setTimeout(()=>h.remove(),4500);
 }
 setInterval(spawnHeart,700);
-
-setInterval(()=>{
- const diff=targetDate-Date.now();
- if(diff<=0){celebrate();return;}
- const d=Math.floor(diff/86400000);
- const h=Math.floor((diff%86400000)/3600000);
- const m=Math.floor((diff%3600000)/60000);
- const s=Math.floor((diff%60000)/1000);
- document.getElementById("timer").textContent=`${d}d ${h}h ${m}m ${s}s`;
-},1000);
+setInterval(() => {
+    const diff = targetDate - Date.now();
+    
+    if (diff <= 0) {
+        // Instead of auto-starting, show the button
+        document.getElementById("startOverlay").style.display = "flex";
+        document.getElementById("timer").textContent = "0d 0h 0m 0s";
+        return; 
+    }
+    
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    document.getElementById("timer").textContent = `${d}d ${h}h ${m}m ${s}s`;
+}, 1000);
 </script>
 </body>
 </html>
